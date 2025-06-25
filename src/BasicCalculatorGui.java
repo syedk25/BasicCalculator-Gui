@@ -2,12 +2,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+import static java.lang.Double.parseDouble;
+import static java.lang.Long.parseLong;
 
 public class
 BasicCalculatorGui extends JFrame implements ActionListener
 {
     JTextField display;
-    JButton b1, b2, b3, b4, b5, b6, b7, b8, b9, b0, bc, ba, bs, bm, bd, bt;
+    JButton b1, b2, b3, b4, b5, b6, b7, b8, b9, b0, bc, ba, bs, bm, bd, bt,b;
 
     BasicCalculatorGui()
     {
@@ -76,19 +81,23 @@ BasicCalculatorGui extends JFrame implements ActionListener
         b0.addActionListener(this);
 
         bt=new JButton("=");
-        bt.setBounds(150,435,80,80);
+        bt.setBounds(50,520,380,50);
         bt.addActionListener(this);
 
         bc=new JButton("C");
         bc.setBounds(250,435,80,80);
         bc.addActionListener(this);
 
+        b=new JButton(".");
+        b.setBounds(150,435,80,80);
+        b.addActionListener(this);
+
 
         add(b0);
         add(b7);
         add(b8);
         add(b9);
-
+        add(b);
         add(b4);
         add(b5);
         add(b6);
@@ -106,7 +115,7 @@ BasicCalculatorGui extends JFrame implements ActionListener
 
 
         add(display);
-        setSize(500,570);
+        setSize(500,650);
         setLayout(null);
         setVisible(true);
     }
@@ -114,7 +123,12 @@ BasicCalculatorGui extends JFrame implements ActionListener
     String op="";
     public void actionPerformed(ActionEvent e)
     {
-
+        if(e.getSource()==b)
+        {
+            String ex=display.getText();
+            ex+=".";
+            display.setText(ex);
+        }
         if(e.getSource()==b1)
         {
             String ex=display.getText();
@@ -217,10 +231,37 @@ BasicCalculatorGui extends JFrame implements ActionListener
         {
             switch (op)
             {
-                case "+" : display.setText(String.valueOf(Double.parseDouble(a)+ Long.parseLong(display.getText())));break;
-                case "-" : display.setText(String.valueOf(Double.parseDouble(a)- Long.parseLong(display.getText())));break;
-                case "*" : display.setText(String.valueOf(Double.parseDouble(a)* Long.parseLong(display.getText())));break;
-                case "/" : display.setText(String.valueOf(Double.parseDouble(a)/ Long.parseLong(display.getText())));break;
+                case "+" : // Rounds to 2 decimal places
+                {
+                    float value = (float)(parseDouble(a)+ parseDouble(display.getText()));
+                    BigDecimal bd = new BigDecimal(Float.toString(value));
+                    bd = bd.setScale(2, RoundingMode.HALF_UP);
+
+                    display.setText(String.valueOf(bd));break;
+                }
+                case "-" :  {
+                    float value = (float) parseDouble(a) - parseLong(display.getText());
+                    BigDecimal bd = new BigDecimal(Float.toString(value));
+                    bd = bd.setScale(2, RoundingMode.HALF_UP);
+
+                    display.setText(String.valueOf(bd));break;
+                }
+                case "*" : {
+                    float value = (float) parseDouble(a) * parseLong(display.getText());
+                    BigDecimal bd = new BigDecimal(Float.toString(value));
+                    bd = bd.setScale(2, RoundingMode.HALF_UP);
+
+                    display.setText(String.valueOf(bd));break;
+                }
+                case "/" :  {
+                    float value = (float) parseDouble(a) / parseLong(display.getText());
+                    BigDecimal bd = new BigDecimal(Float.toString(value));
+                    bd = bd.setScale(2, RoundingMode.HALF_UP);
+
+                    display.setText(String.valueOf(bd));break;
+                }
+                default:
+                   break;
             }
             a="";
             op="";
